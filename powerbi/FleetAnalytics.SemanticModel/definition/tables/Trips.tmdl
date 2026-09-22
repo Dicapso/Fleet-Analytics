@@ -1,0 +1,66 @@
+table Trips
+	lineageTag: e93db7d5-e928-49a1-87e4-fe4e5d7b0d02
+
+	column trip_id
+		dataType: int64
+		formatString: 0
+		lineageTag: fb876a75-c157-4467-9f8d-c6a71369a5e3
+		summarizeBy: none
+		sourceColumn: trip_id
+
+	column vehicle_id
+		dataType: int64
+		formatString: 0
+		lineageTag: df8227c1-2cf8-48b4-ad09-0559737fc15c
+		summarizeBy: none
+		sourceColumn: vehicle_id
+
+	column driver_id
+		dataType: int64
+		formatString: 0
+		lineageTag: cfe18141-6b2c-46cb-9d41-e2439ccc9371
+		summarizeBy: none
+		sourceColumn: driver_id
+
+	column trip_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 53abd830-2c79-4ee7-be2a-b74eccd5a3c4
+		summarizeBy: none
+		sourceColumn: trip_date
+
+	column origin_city
+		dataType: string
+		lineageTag: 81465b93-954f-4ab6-8c39-fb51eb70c21a
+		summarizeBy: none
+		sourceColumn: origin_city
+
+	column destination_city
+		dataType: string
+		lineageTag: d9b378dd-6808-46f6-8114-f91f3f598937
+		summarizeBy: none
+		sourceColumn: destination_city
+
+	column distance_km
+		dataType: double
+		formatString: #,0.0
+		lineageTag: 0880ffe0-d3a6-4765-b649-fac1869ac876
+		summarizeBy: sum
+		sourceColumn: distance_km
+
+	column duration_min
+		dataType: int64
+		formatString: #,0
+		lineageTag: 811ce521-0694-4535-848c-62fd6c0c0407
+		summarizeBy: sum
+		sourceColumn: duration_min
+
+	partition Trips = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\path\to\Fleet-Analytics\data\trips.csv"),[Delimiter=",", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted,{{"trip_id", Int64.Type}, {"vehicle_id", Int64.Type}, {"driver_id", Int64.Type}, {"trip_date", type date}, {"origin_city", type text}, {"destination_city", type text}, {"distance_km", type number}, {"duration_min", Int64.Type}})
+				in
+				    Typed
