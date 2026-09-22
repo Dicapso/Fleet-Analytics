@@ -1,0 +1,46 @@
+-- Fleet Analytics - DAX measures
+-- Paste these into a new measure in Power BI Desktop (Modeling > New measure),
+-- one at a time. Assumes table names: Trips, FuelLogs, Maintenance, Vehicles,
+-- Drivers, and a Date calendar table related to Trips[trip_date],
+-- FuelLogs[log_date] and Maintenance[service_date] (see powerbi/README.md).
+
+Total Distance (km) = SUM(Trips[distance_km])
+
+Total Trips = COUNTROWS(Trips)
+
+Active Vehicles = DISTINCTCOUNT(Trips[vehicle_id])
+
+Total Fuel Cost (AZN) = SUM(FuelLogs[total_cost_azn])
+
+Total Fuel (L) = SUM(FuelLogs[liters])
+
+Avg Fuel Efficiency (km/L) =
+DIVIDE([Total Distance (km)], [Total Fuel (L)])
+
+Fuel Cost per km (AZN) =
+DIVIDE([Total Fuel Cost (AZN)], [Total Distance (km)])
+
+Total Maintenance Cost (AZN) = SUM(Maintenance[cost_azn])
+
+Total Downtime (hours) = SUM(Maintenance[downtime_hours])
+
+Maintenance Cost per km (AZN) =
+DIVIDE([Total Maintenance Cost (AZN)], [Total Distance (km)])
+
+Total Operating Cost (AZN) =
+[Total Fuel Cost (AZN)] + [Total Maintenance Cost (AZN)]
+
+Operating Cost per km (AZN) =
+DIVIDE([Total Operating Cost (AZN)], [Total Distance (km)])
+
+Avg Trip Length (km) =
+DIVIDE([Total Distance (km)], [Total Trips])
+
+Fuel Cost MTD =
+TOTALMTD([Total Fuel Cost (AZN)], 'Date'[Date])
+
+Fuel Cost Prior Month =
+CALCULATE([Total Fuel Cost (AZN)], DATEADD('Date'[Date], -1, MONTH))
+
+Fuel Cost MoM % =
+DIVIDE([Total Fuel Cost (AZN)] - [Fuel Cost Prior Month], [Fuel Cost Prior Month])
