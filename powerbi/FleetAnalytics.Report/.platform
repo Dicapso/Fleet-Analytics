@@ -1,0 +1,1 @@
+{"$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json", "metadata": {"type": "Report", "displayName": "FleetAnalytics"}, "config": {"version": "2.0", "logicalId": "65b68fc6-a782-47ef-9672-ce51e48b5ce5"}}
