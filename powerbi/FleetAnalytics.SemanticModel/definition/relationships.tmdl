@@ -1,0 +1,27 @@
+relationship 3bc39461-339b-4449-8619-c1ba3c56fe39
+	fromColumn: Trips.vehicle_id
+	toColumn: Vehicles.vehicle_id
+
+relationship 8b1f32a6-4bcb-4c17-bb90-1a154a4566e7
+	fromColumn: Trips.driver_id
+	toColumn: Drivers.driver_id
+
+relationship 2cb2f519-8688-476f-99ec-9851d7f332b5
+	fromColumn: FuelLogs.vehicle_id
+	toColumn: Vehicles.vehicle_id
+
+relationship 57f3c5c8-5dab-44a6-9820-b0ee210a609d
+	fromColumn: Maintenance.vehicle_id
+	toColumn: Vehicles.vehicle_id
+
+relationship ae4579c0-ee17-4286-9309-f196ce34f12e
+	fromColumn: Trips.trip_date
+	toColumn: Date.Date
+
+relationship a262e771-b8a9-48cf-9502-e61553ef7206
+	fromColumn: FuelLogs.log_date
+	toColumn: Date.Date
+
+relationship 803e16f7-31ae-46f3-b3d6-2c0bdce3788f
+	fromColumn: Maintenance.service_date
+	toColumn: Date.Date
