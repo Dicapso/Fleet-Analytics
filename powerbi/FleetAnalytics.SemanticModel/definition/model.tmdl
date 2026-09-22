@@ -1,0 +1,20 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	discourageImplicitMeasures
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Vehicles","Drivers","Trips","Maintenance","FuelLogs","Date","_Measures"]
+
+ref table Vehicles
+ref table Drivers
+ref table Trips
+ref table Maintenance
+ref table FuelLogs
+ref table Date
+ref table _Measures
+
+ref culture en-US
