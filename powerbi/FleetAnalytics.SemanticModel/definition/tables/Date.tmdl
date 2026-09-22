@@ -1,0 +1,46 @@
+table Date
+	lineageTag: 119c6167-6fb1-4ef7-b71d-9971cdf7c868
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 41f34bd6-fcbc-4da6-9b96-428ab9457e13
+		summarizeBy: none
+		sourceColumn: Date
+		isKey
+
+	column Year = YEAR('Date'[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: 4c87eaca-9706-4a4e-bea0-a40785e61aa8
+		summarizeBy: none
+
+	column MonthNumber = MONTH('Date'[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: 940042f9-49fb-49cb-b450-848bf9f35148
+		summarizeBy: none
+
+	column MonthName = FORMAT('Date'[Date], "MMMM")
+		dataType: string
+		lineageTag: c0df902a-540a-404a-9bcd-19a77c0d2c6c
+		summarizeBy: none
+
+	column Month = FORMAT('Date'[Date], "YYYY-MM")
+		dataType: string
+		lineageTag: b443be35-2ac8-4248-8334-8cbc2636d204
+		summarizeBy: none
+
+	column Quarter = "Q" & QUARTER('Date'[Date])
+		dataType: string
+		lineageTag: a1b10c2f-f562-41c0-b151-8fbaf99e4cd9
+		summarizeBy: none
+
+	partition Date = calculated
+		mode: import
+		source = ```
+				CALENDAR(DATE(2025,1,1), DATE(2025,12,31))
+			```
+
+	annotation __PBI_TimeIntelligenceEnabled = 1
