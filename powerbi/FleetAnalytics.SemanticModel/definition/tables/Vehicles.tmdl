@@ -1,0 +1,70 @@
+table Vehicles
+	lineageTag: a94955ed-ce1f-4bc9-9e8b-9bd7a7be0f2e
+
+	column vehicle_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 65aae3b4-3f93-4a13-aaf7-2912207ddc60
+		summarizeBy: none
+		sourceColumn: vehicle_id
+
+	column plate_number
+		dataType: string
+		lineageTag: acfbaed5-72d2-491b-a8c4-27246739332f
+		summarizeBy: none
+		sourceColumn: plate_number
+
+	column make
+		dataType: string
+		lineageTag: ebfdfc9c-86d5-479e-92a7-57b102f4d3d3
+		summarizeBy: none
+		sourceColumn: make
+
+	column model
+		dataType: string
+		lineageTag: 069d3702-918b-4bac-a84d-d560e22e41c4
+		summarizeBy: none
+		sourceColumn: model
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 1d9276b4-3d77-45ce-9c56-bed41eb6976f
+		summarizeBy: none
+		sourceColumn: year
+
+	column fuel_type
+		dataType: string
+		lineageTag: 55b6ba35-2998-4776-ad7f-508aa15166f8
+		summarizeBy: none
+		sourceColumn: fuel_type
+
+	column purchase_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5a6b82fb-5ad6-4869-a041-1b5b99594fc8
+		summarizeBy: none
+		sourceColumn: purchase_date
+
+	column home_city
+		dataType: string
+		lineageTag: b28f87ca-9899-4f2c-ac4a-18a2f449ec6f
+		summarizeBy: none
+		sourceColumn: home_city
+
+	column odometer_start_km
+		dataType: int64
+		formatString: #,0
+		lineageTag: d158d16b-5070-4478-b79b-d98030336f3a
+		summarizeBy: sum
+		sourceColumn: odometer_start_km
+
+	partition Vehicles = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\path\to\Fleet-Analytics\data\vehicles.csv"),[Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted,{{"vehicle_id", Int64.Type}, {"plate_number", type text}, {"make", type text}, {"model", type text}, {"year", Int64.Type}, {"fuel_type", type text}, {"purchase_date", type date}, {"home_city", type text}, {"odometer_start_km", Int64.Type}})
+				in
+				    Typed
