@@ -1,0 +1,61 @@
+table FuelLogs
+	lineageTag: 5999d7ec-4a64-43e9-8b8b-afea5d40c8c5
+
+	column fuel_log_id
+		dataType: int64
+		formatString: 0
+		lineageTag: e398cbb4-bba7-4e57-9daa-546406d1fc93
+		summarizeBy: none
+		sourceColumn: fuel_log_id
+
+	column vehicle_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 160632b6-782a-430a-8683-e50cfeb94911
+		summarizeBy: none
+		sourceColumn: vehicle_id
+
+	column log_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: be207667-a0f2-454a-b259-1c354e4927ed
+		summarizeBy: none
+		sourceColumn: log_date
+
+	column liters
+		dataType: double
+		formatString: #,0.0
+		lineageTag: c17663d5-2b56-4cf1-a0b7-b52e8fa763c6
+		summarizeBy: sum
+		sourceColumn: liters
+
+	column price_per_liter_azn
+		dataType: double
+		formatString: #,0.00
+		lineageTag: c4bbba6b-c14d-48d1-8a07-5e12f66d3dff
+		summarizeBy: none
+		sourceColumn: price_per_liter_azn
+
+	column total_cost_azn
+		dataType: double
+		formatString: #,0.00
+		lineageTag: ef8b2eb0-a9ff-4614-925d-2f7d7dc0ee55
+		summarizeBy: sum
+		sourceColumn: total_cost_azn
+
+	column odometer_km
+		dataType: int64
+		formatString: #,0
+		lineageTag: 5903025e-b5e1-49f7-a39a-2cec904fa8e6
+		summarizeBy: none
+		sourceColumn: odometer_km
+
+	partition FuelLogs = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\path\to\Fleet-Analytics\data\fuel_logs.csv"),[Delimiter=",", Columns=7, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted,{{"fuel_log_id", Int64.Type}, {"vehicle_id", Int64.Type}, {"log_date", type date}, {"liters", type number}, {"price_per_liter_azn", type number}, {"total_cost_azn", type number}, {"odometer_km", Int64.Type}})
+				in
+				    Typed
