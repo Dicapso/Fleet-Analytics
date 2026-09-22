@@ -1,0 +1,1 @@
+{"$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json", "metadata": {"type": "SemanticModel", "displayName": "FleetAnalytics"}, "config": {"version": "2.0", "logicalId": "d80f3f82-949f-401e-9c36-c17564c128b0"}}
