@@ -1,0 +1,74 @@
+table _Measures
+	lineageTag: e3fafa97-949e-49f7-821a-6dca485ddec6
+
+	measure 'Total Distance (km)' = SUM(Trips[distance_km])
+		formatString: #,0
+		lineageTag: c1ea8b09-f61d-4186-879c-3e86a9e2c279
+
+	measure 'Total Trips' = COUNTROWS(Trips)
+		formatString: #,0
+		lineageTag: 89ea4a5d-3532-4b29-97ad-65181889bd61
+
+	measure 'Active Vehicles' = DISTINCTCOUNT(Trips[vehicle_id])
+		formatString: #,0
+		lineageTag: 2a4d8f6b-5a3c-440f-b6f6-17a8f50125e6
+
+	measure 'Total Fuel Cost (AZN)' = SUM(FuelLogs[total_cost_azn])
+		formatString: #,0.00
+		lineageTag: 847ca3df-f87e-42c7-be8e-32f22d782892
+
+	measure 'Total Fuel (L)' = SUM(FuelLogs[liters])
+		formatString: #,0.0
+		lineageTag: 7fd85865-a9af-4e0d-b9db-86811a8ca8b3
+
+	measure 'Avg Fuel Efficiency (km/L)' = DIVIDE([Total Distance (km)], [Total Fuel (L)])
+		formatString: #,0.00
+		lineageTag: 5320288e-7f7a-4f0e-a2ad-6d3a4975cc97
+
+	measure 'Fuel Cost per km (AZN)' = DIVIDE([Total Fuel Cost (AZN)], [Total Distance (km)])
+		formatString: #,0.00
+		lineageTag: 0c41c7c9-af2f-4c0a-9623-29da8b6e2e47
+
+	measure 'Total Maintenance Cost (AZN)' = SUM(Maintenance[cost_azn])
+		formatString: #,0.00
+		lineageTag: 197361bb-c1c0-47ee-9e07-767fd2587bfc
+
+	measure 'Total Downtime (hours)' = SUM(Maintenance[downtime_hours])
+		formatString: #,0.0
+		lineageTag: 1c966031-ab25-4b92-bd4e-a1e841f9b5af
+
+	measure 'Maintenance Cost per km (AZN)' = DIVIDE([Total Maintenance Cost (AZN)], [Total Distance (km)])
+		formatString: #,0.00
+		lineageTag: 06089ef0-8a7a-449f-bdb4-275459adcf99
+
+	measure 'Total Operating Cost (AZN)' = [Total Fuel Cost (AZN)] + [Total Maintenance Cost (AZN)]
+		formatString: #,0.00
+		lineageTag: 47a4cebe-6cbf-47b0-a54a-67a920fbda4f
+
+	measure 'Operating Cost per km (AZN)' = DIVIDE([Total Operating Cost (AZN)], [Total Distance (km)])
+		formatString: #,0.00
+		lineageTag: 2460637d-c4c5-48de-86c0-5478c37cbe97
+
+	measure 'Avg Trip Length (km)' = DIVIDE([Total Distance (km)], [Total Trips])
+		formatString: #,0.0
+		lineageTag: bdcbe294-ff46-4b38-8243-3dabf7de7342
+
+	measure 'Fuel Cost MTD' = TOTALMTD([Total Fuel Cost (AZN)], 'Date'[Date])
+		formatString: #,0.00
+		lineageTag: 0db9961b-d108-419b-9eea-92a95efb9fc8
+
+	measure 'Fuel Cost Prior Month' = CALCULATE([Total Fuel Cost (AZN)], DATEADD('Date'[Date], -1, MONTH))
+		formatString: #,0.00
+		lineageTag: 59a237df-cf42-4d3b-ad45-fd8428c15487
+
+	measure 'Fuel Cost MoM %' = DIVIDE([Total Fuel Cost (AZN)] - [Fuel Cost Prior Month], [Fuel Cost Prior Month])
+		formatString: 0.0%
+		lineageTag: da789cc4-3497-4ba9-8488-c684fd4ed0cc
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows({}, {})
+				in
+				    Source
