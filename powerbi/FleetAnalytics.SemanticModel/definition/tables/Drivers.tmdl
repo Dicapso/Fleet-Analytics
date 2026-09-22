@@ -1,0 +1,44 @@
+table Drivers
+	lineageTag: 605aff9a-89bd-4428-8b6f-13240d4fb072
+
+	column driver_id
+		dataType: int64
+		formatString: 0
+		lineageTag: ae8e46c3-4dc6-434b-9812-6e251f3e6a00
+		summarizeBy: none
+		sourceColumn: driver_id
+
+	column full_name
+		dataType: string
+		lineageTag: 9d4bdea2-0e49-471e-ae5e-c97c6f592be2
+		summarizeBy: none
+		sourceColumn: full_name
+
+	column license_no
+		dataType: string
+		lineageTag: 8b525ea3-d866-4ac8-9b38-43138b547897
+		summarizeBy: none
+		sourceColumn: license_no
+
+	column hire_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d9546b44-90a8-4259-9a76-ac52b177266f
+		summarizeBy: none
+		sourceColumn: hire_date
+
+	column home_city
+		dataType: string
+		lineageTag: b06d893c-7437-4efa-88e9-62a1a8fcf913
+		summarizeBy: none
+		sourceColumn: home_city
+
+	partition Drivers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\path\to\Fleet-Analytics\data\drivers.csv"),[Delimiter=",", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted,{{"driver_id", Int64.Type}, {"full_name", type text}, {"license_no", type text}, {"hire_date", type date}, {"home_city", type text}})
+				in
+				    Typed
