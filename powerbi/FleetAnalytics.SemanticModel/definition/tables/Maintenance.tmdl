@@ -1,0 +1,53 @@
+table Maintenance
+	lineageTag: 7429fec4-3010-49e7-a2ac-29dea845f4d8
+
+	column maintenance_id
+		dataType: int64
+		formatString: 0
+		lineageTag: b5df6b87-1eb0-4494-9d1e-4cf9d979120d
+		summarizeBy: none
+		sourceColumn: maintenance_id
+
+	column vehicle_id
+		dataType: int64
+		formatString: 0
+		lineageTag: f67adb3c-e018-42e6-8b29-30b90ebe266e
+		summarizeBy: none
+		sourceColumn: vehicle_id
+
+	column service_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ea6f12b9-d2b0-4c9a-bc62-904cc5be87e2
+		summarizeBy: none
+		sourceColumn: service_date
+
+	column service_type
+		dataType: string
+		lineageTag: cb4273e0-d11c-4f3b-aa04-d8926bbaae4c
+		summarizeBy: none
+		sourceColumn: service_type
+
+	column cost_azn
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 00c09cb1-8083-46bd-891f-bae9794bd302
+		summarizeBy: sum
+		sourceColumn: cost_azn
+
+	column downtime_hours
+		dataType: double
+		formatString: #,0.0
+		lineageTag: 7e991015-add8-452e-9d5a-016d5bcb4f51
+		summarizeBy: sum
+		sourceColumn: downtime_hours
+
+	partition Maintenance = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\path\to\Fleet-Analytics\data\maintenance.csv"),[Delimiter=",", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted,{{"maintenance_id", Int64.Type}, {"vehicle_id", Int64.Type}, {"service_date", type date}, {"service_type", type text}, {"cost_azn", type number}, {"downtime_hours", type number}})
+				in
+				    Typed
